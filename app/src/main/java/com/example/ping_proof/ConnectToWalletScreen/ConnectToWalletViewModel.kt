@@ -32,6 +32,7 @@ class ConnectToWalletViewModel: ViewModel() {
             iconUri = iconUri.toUri(),
             identityName = identityName,
         ))
+        Log.e("Initiate", "Wallet connection initiated")
         walletAdapter.rpcCluster = Environment.DEV.SOLANA_CLUSTER
         viewModelScope.launch {
             try {
