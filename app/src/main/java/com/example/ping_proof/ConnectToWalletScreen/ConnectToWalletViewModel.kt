@@ -39,6 +39,7 @@ class ConnectToWalletViewModel: ViewModel() {
                 val result = walletAdapter.connect(sender)
                 when(result) {
                     is TransactionResult.Success -> {
+                        Log.e("Wallet connection", "Success in wallet connection")
                         val bytePublicKey = result.authResult.publicKey
                         val publickey = SolanaPublicKey(bytePublicKey)
                         val registerApiResult = ApiClient.registerWallet(publickey)
