@@ -9,6 +9,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.ping_proof.APIUtils.ApiClient
+import com.example.ping_proof.Environment
 import com.example.ping_proof.GlobalToast
 import com.example.ping_proof.PreferenceManger
 
@@ -31,7 +32,7 @@ class ConnectToWalletViewModel: ViewModel() {
             iconUri = iconUri.toUri(),
             identityName = identityName,
         ))
-        walletAdapter.rpcCluster = RpcCluster.MainnetBeta
+        walletAdapter.rpcCluster = Environment.DEV.SOLANA_CLUSTER
         viewModelScope.launch {
             try {
                 val result = walletAdapter.connect(sender)
