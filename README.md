@@ -57,7 +57,7 @@ If you want to run against a real backend or MQTT broker:
 
 
 ### Environment switching
-The app includes an `Environment.kt` enum with `DEV` and `PROD`. Values are sourced from `BuildConfig` so you can reuse the same APK with different configs.
+The app includes an `Environment.kt` enum with `DEV` and `PROD`. Values are sourced from `Environment.kt` so you can reuse the same APK with different configs.
 
 See `app/src/main/java/com/example/ping_proof/Environment.kt` (provided below) for the final version.
 
