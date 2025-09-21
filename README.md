@@ -77,8 +77,8 @@ If you discover a vulnerability, please follow our [SECURITY.md](SECURITY.md) po
 ## License
 Licensed under the Apache License, Version 2.0. See [LICENSE](LICENSE) and [NOTICE](NOTICE).
 
-## About PingProof
-PingProof is a decentralized uptime monitoring platform where companies register APIs and validators ensure availability across regions. Validators earn rewards for their contributions.
+## About Ping Proof Labs
+Ping Proof Labs is a decentralized uptime monitoring platform where companies register APIs and validators ensure availability across regions. Validators earn rewards for their contributions.
 
 - 🌐 Website: https://pingproof.io
 - 🐦 Twitter: https://twitter.com/pingproof_io
