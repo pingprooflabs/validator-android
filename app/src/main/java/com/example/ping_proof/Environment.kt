@@ -3,9 +3,12 @@ package com.example.ping_proof
 import com.solana.mobilewalletadapter.clientlib.RpcCluster
 
 /**
+ * Default environment configuration.
  *
- *
- * **/
+ * ⚠️ Do not commit real secrets here.
+ * Use only empty strings or Devnet/test values in git.
+ * Update locally if you need to run against real infra.
+ */
 enum class Environment(
     val baseUrl: String,
     val MQTT_BROKER_URL: String,
