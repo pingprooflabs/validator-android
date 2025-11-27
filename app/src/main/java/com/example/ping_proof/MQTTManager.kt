@@ -26,7 +26,7 @@ import org.eclipse.paho.client.mqttv3.MqttMessage
 import java.util.UUID
 
 object MQTTManager {
-    private val MQTT_BROKER_URL = PreferenceManger.runningEnv.MQTT_BROKER_URL
+    private val MQTT_BROKER_URL = getEnvironment().MQTT_BROKER_URL
     private val CLIENT_ID = "PingProofCalidator_" + UUID.randomUUID().toString()
     private lateinit var mqttClient: MqttClient
     private lateinit var appContext: Context
@@ -42,8 +42,8 @@ object MQTTManager {
                 isCleanSession = false               // ✅ Keeps subscriptions alive
                 connectionTimeout = 10               // ✅ Reasonable for mobile
                 keepAliveInterval = 20               // ✅ Ping every 20s
-                userName = PreferenceManger.runningEnv.MQTT_USERNAME
-                password = PreferenceManger.runningEnv.MQTT_PASSWORD.toCharArray()
+                userName = getEnvironment().MQTT_USERNAME
+                password = getEnvironment().MQTT_PASSWORD.toCharArray()
             }
 
             mqttClient.setCallback(object : MqttCallback {
@@ -138,6 +138,5 @@ object MQTTManager {
         } catch (e: Exception) {
             Log.d("WalletConnect", "Error in Disconecting ${e}")
         }
-
     }
 }

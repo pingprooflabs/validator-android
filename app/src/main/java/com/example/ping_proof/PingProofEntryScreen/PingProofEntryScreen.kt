@@ -18,6 +18,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.ping_proof.APIUtils.AllPayments
 import com.example.ping_proof.AppColor
 import com.example.ping_proof.ConnectToWalletScreen.ConnectToWalletView
 import com.example.ping_proof.ConnectToWalletScreen.ConnectToWalletViewModel
@@ -31,7 +32,8 @@ data class UserDetails(
     var userId: String,
     var pubKey: SolanaPublicKey?,
     var isValidating: Boolean = false,
-    var totalValidations: Int = 0
+    var totalValidations: Int = 0,
+    var listOfAllPayments: List<AllPayments>
 )
 
 @Composable

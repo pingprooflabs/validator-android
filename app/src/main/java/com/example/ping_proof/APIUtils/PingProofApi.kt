@@ -11,4 +11,10 @@ interface PingProofApi {
 
     @POST("/api/v1/validator/get-count")
     suspend fun getCount(@Body validatorId: CountRequest): CountResponse
+
+    @POST("/api/v1/validator/payment")
+    suspend fun claimReward(@Body valdatorId: CountRequest): ClaimRewardResponse
+
+    @POST("/api/v1/validator/list-payment")
+    suspend fun getAllPayments(@Body valdatorId: CountRequest): List<AllPayments>
 }

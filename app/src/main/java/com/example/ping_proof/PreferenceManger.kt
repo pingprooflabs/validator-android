@@ -3,23 +3,27 @@ package com.example.ping_proof
 import android.content.Context
 import android.content.SharedPreferences
 import android.util.Log
+import com.example.ping_proof.APIUtils.AllPayments
 import com.example.ping_proof.PingProofEntryScreen.UserDetails
+import com.google.gson.reflect.TypeToken
+import com.google.gson.Gson
 import com.solana.publickey.SolanaPublicKey
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 
 object PreferenceManger {
-    val runningEnv: Environment = Environment.PROD
     private const val PREFS_NAME = "PingProofPrefs"
     private const val KEY_VALIDATOR_ID = "KEY_VALIDATOR_ID"
     private const val KEY_VALIDATOR_WALLET_ADDRESS = "KEY_VALIDATOR_WALLET_ADDRESS"
     //For know just store the validating value in mobile later fetch those details whether user is validating or not from backend
     private const val KEY_IS_VALIDATING = "KEY_IS_VALIDATING"
     private const val KEY_NNUMBER_OF_VALIDATIONS = "KEY_NNUMBER_OF_VALIDATIONS"
+    private const val ALL_PAYMENTS = "ALL_PAYMENTS"
 
     private lateinit var prefs: SharedPreferences
-    private val _validatorDetails = MutableStateFlow(UserDetails("", null, false))
+    private val _validatorDetails = MutableStateFlow(UserDetails("", null, false, listOfAllPayments = emptyList<AllPayments>()))
     val validatorDetails: StateFlow<UserDetails> get() = _validatorDetails
+
 
     fun init(context: Context) {
         prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
@@ -27,7 +31,7 @@ object PreferenceManger {
         _validatorDetails.value = getUserDetails()
 
         prefs.registerOnSharedPreferenceChangeListener { _, key ->
-            if (key == KEY_VALIDATOR_ID || key == KEY_VALIDATOR_WALLET_ADDRESS || key == KEY_IS_VALIDATING || key == KEY_NNUMBER_OF_VALIDATIONS) {
+            if (key == KEY_VALIDATOR_ID || key == KEY_VALIDATOR_WALLET_ADDRESS || key == KEY_IS_VALIDATING || key == KEY_NNUMBER_OF_VALIDATIONS || key == ALL_PAYMENTS) {
                 _validatorDetails.value = getUserDetails()
             }
         }
@@ -38,13 +42,14 @@ object PreferenceManger {
         val walletAddressStr = prefs.getString(KEY_VALIDATOR_WALLET_ADDRESS, "") ?: ""
         val isValidating = prefs.getBoolean(KEY_IS_VALIDATING, false)
         val numberOfValidations = prefs.getInt(KEY_NNUMBER_OF_VALIDATIONS, 0)
+        val toalPayments: List<AllPayments> = getAllPayments()
         val pubKey = try {
             if (walletAddressStr.isNotBlank()) SolanaPublicKey.from(walletAddressStr) else null
         } catch (e: Exception) {
             Log.e("PreferenceManager", "Invalid pubkey: $e")
             null
         }
-        return UserDetails(userId = userId, pubKey = pubKey, isValidating = isValidating, totalValidations = numberOfValidations)
+        return UserDetails(userId = userId, pubKey = pubKey, isValidating = isValidating, totalValidations = numberOfValidations, listOfAllPayments = toalPayments)
     }
 
     fun setWalletAddress(address: String) {
@@ -71,6 +76,12 @@ object PreferenceManger {
         _validatorDetails.value = _validatorDetails.value.copy(totalValidations = count)
     }
 
+    fun setAllPayments(payments: List<AllPayments>) {
+        val json = Gson().toJson(payments)
+        prefs.edit().putString(ALL_PAYMENTS, json).apply()
+        _validatorDetails.value = _validatorDetails.value.copy(listOfAllPayments = payments)
+    }
+
     fun getWalletAddress(): SolanaPublicKey? {
         val publicKeyString = prefs.getString(KEY_VALIDATOR_WALLET_ADDRESS, "").toString()
         if (publicKeyString.isEmpty()) return null
@@ -87,5 +98,16 @@ object PreferenceManger {
 
     fun getNumberOfValidations(): Int {
         return prefs.getInt(KEY_NNUMBER_OF_VALIDATIONS, 0)
+    }
+
+    fun getAllPayments(): List<AllPayments> {
+        val json = prefs.getString(ALL_PAYMENTS, null) ?: return emptyList()
+
+        return try {
+            val type = object : TypeToken<List<AllPayments>>() {}.type
+            Gson().fromJson(json, type) ?: emptyList()
+        } catch (e: Exception) {
+            emptyList()
+        }
     }
 }

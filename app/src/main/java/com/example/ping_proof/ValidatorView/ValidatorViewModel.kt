@@ -76,4 +76,19 @@ class ValidatorViewModel(userDetails: UserDetails): ViewModel() {
             }
         }
     }
+
+    fun claimReward(context: Context) {
+        viewModelScope.launch {
+            try {
+                val paymentResponse = ApiClient.claimReward(userDetails.userId)
+                val getCount = ApiClient.getCount(userDetails.userId)
+                val getAllPayments = ApiClient.getAllTransactions(userDetails.userId)
+                PreferenceManger.setNumberOfValidations(getCount.count)
+                PreferenceManger.setAllPayments(getAllPayments)
+                GlobalToast.show("Succesccully Claimed your reward for ${paymentResponse.total_count_claimed}, transaction signature ${paymentResponse.transaction_signature}")
+            } catch (e: Exception) {
+                GlobalToast.show("Error in Claiming Reward")
+            }
+        }
+    }
 }

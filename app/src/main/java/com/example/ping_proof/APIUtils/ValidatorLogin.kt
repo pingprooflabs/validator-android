@@ -18,6 +18,16 @@ data class RegisterAPIResponse(
     val message: String
 )
 
+data class ClaimRewardResponse(
+    val transaction_signature: String,
+    val total_count_claimed: Int
+)
+
+data class AllPayments(
+    val totalPingCount: Int,
+    val transactionSignature: String
+)
+
 data class StartValidatingresponse(
     val success: Boolean,
     val message: String

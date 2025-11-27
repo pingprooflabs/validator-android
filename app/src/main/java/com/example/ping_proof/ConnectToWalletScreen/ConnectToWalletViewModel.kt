@@ -12,6 +12,7 @@ import com.example.ping_proof.APIUtils.ApiClient
 import com.example.ping_proof.Environment
 import com.example.ping_proof.GlobalToast
 import com.example.ping_proof.PreferenceManger
+import com.example.ping_proof.getEnvironment
 
 import com.solana.mobilewalletadapter.clientlib.ActivityResultSender
 import com.solana.mobilewalletadapter.clientlib.ConnectionIdentity
@@ -33,7 +34,7 @@ class ConnectToWalletViewModel: ViewModel() {
             identityName = identityName,
         ))
         Log.e("Initiate", "Wallet connection initiated")
-        walletAdapter.rpcCluster = Environment.DEV.SOLANA_CLUSTER
+        walletAdapter.rpcCluster = getEnvironment().SOLANA_CLUSTER
         viewModelScope.launch {
             try {
                 val result = walletAdapter.connect(sender)
@@ -43,10 +44,13 @@ class ConnectToWalletViewModel: ViewModel() {
                         val bytePublicKey = result.authResult.publicKey
                         val publickey = SolanaPublicKey(bytePublicKey)
                         val registerApiResult = ApiClient.registerWallet(publickey)
-                        val getcountofAddress = ApiClient.getCount(registerApiResult.message)
+                        val validatorId = registerApiResult.message
+                        val getcountofAddress = ApiClient.getCount(validatorId)
+                        val getAllPayments = ApiClient.getAllTransactions(validatorId)
                         PreferenceManger.setWalletAddress(publickey.base58())
                         PreferenceManger.setUserID(registerApiResult.message)
                         PreferenceManger.setNumberOfValidations(getcountofAddress.count)
+                        PreferenceManger.setAllPayments(getAllPayments)
                     }
                     is TransactionResult.Failure -> {
                         GlobalToast.show("Wallet Connection and Failed")
